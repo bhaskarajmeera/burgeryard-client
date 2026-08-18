@@ -1,5 +1,17 @@
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
+import backyardclassic from '../assets/back-yard-classic.png';
+import doublestack from '../assets/double-stack.png';
+import greenyardveggie from '../assets/green-yard-veggie.png';
+import crispyfriedburger from '../assets/crispy-fried-burger.png';
+import aussiemate from '../assets/aussie-mate.png';
+import cheeselovers from '../assets/cheese-lovers.png';
+import chickychook from '../assets/chiky-chook.png';
+import smokeybbqdeluxe from '../assets/smokey-deluxe.png';
+import milkshake from '../assets/milk-shake.png';
+import juniourcheeseburger from '../assets/juniour-cheese-burger.png';
+import veggieloadedfries from '../assets/veggie-loaded-fries.png';
+import chipsnuggets from '../assets/nuggets-chips.png'
 
 const menuItems = [
   {
@@ -9,8 +21,7 @@ const menuItems = [
     price: 15,
     description:
       'Wagyu Beef, American Cheese, Pickled Gherkins, Fresh Lettuce, Slaw, Jalapenos, Yard Signature Sauce & Spicy Peri Sauce',
-    image:
-      'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=900&q=80',
+    image:aussiemate,
   },
   {
     id: 2,
@@ -20,7 +31,7 @@ const menuItems = [
     description:
       'Wagyu Beef, American Cheese, Red Onion, Pickled Gherkins, Fresh Lettuce, Tomatoes, Yard Signature Sauce & Truffle Sauce',
     image:
-      'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=80',
+      backyardclassic,
   },
   {
     id: 3,
@@ -30,7 +41,7 @@ const menuItems = [
     description:
       'Double Wagyu Beef & Double American Cheese, Maple Beef Rashers, Pickled Gherkins, Fresh Lettuce, Tomatoes, Red Onions, Yard Signature Sauce & Truffle Sauce',
     image:
-      'https://images.unsplash.com/photo-1550317138-10000687a72b?auto=format&fit=crop&w=900&q=80',
+      doublestack,
   },
   {
     id: 4,
@@ -40,7 +51,7 @@ const menuItems = [
     description:
       'Wagyu Beef, American Cheese, Onion Rings, Tomatoes, Smokey BBQ Sauce & Yard Signature Sauce',
     image:
-      'https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&w=900&q=80',
+      smokeybbqdeluxe,
   },
   {
     id: 5,
@@ -50,7 +61,7 @@ const menuItems = [
     description:
       'Wagyu Beef, Crispy Fried Chicken, Double American Cheese, Red Onion, Beetroot, Fresh Lettuce, Tomatoes, Yard Signature Sauce & Smokey BBQ Sauce',
     image:
-      'https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=900&q=80',
+      aussiemate,
   },
   {
     id: 6,
@@ -60,7 +71,7 @@ const menuItems = [
     description:
       'Wagyu Beef, Double American Cheese, Red Onion, Pickle Gherkins, Yard Signature Sauce & Truffle Sauce',
     image:
-      'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=900&q=80',
+      cheeselovers,
   },
   {
     id: 7,
@@ -70,7 +81,7 @@ const menuItems = [
     description:
       'Seasoned Grilled Chicken, American Cheese, Fresh Lettuce, Tomatoes, Yard Signature Sauce & Truffle Sauce',
     image:
-      'https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=900&q=80',
+      chickychook,
   },
   {
     id: 8,
@@ -80,7 +91,7 @@ const menuItems = [
     description:
       'Crispy Fried Chicken, American Cheese, Onion Rings, Slaw, Tomatoes, Jalapenos, Yard Signature Sauce & Spicy Peri Sauce',
     image:
-      'https://images.unsplash.com/photo-1565310022184-f23a884f29da?auto=format&fit=crop&w=900&q=80',
+      crispyfriedburger,
   },
   {
     id: 9,
@@ -90,7 +101,7 @@ const menuItems = [
     description:
       'Fried Veggie Patty, American Cheese, Fresh Lettuce, Pickled Gherkins, Tomatoes, Slaw, Grilled Peppers, Onion Rings, Yard Signature Sauce & Spicy Peri Sauce',
     image:
-      'https://images.unsplash.com/photo-1520072959219-c595dc870360?auto=format&fit=crop&w=900&q=80',
+      greenyardveggie,
   },
   {
     id: 10,
@@ -99,7 +110,7 @@ const menuItems = [
     price: 13,
     description: 'Wagyu Beef, American Cheese, Yard Signature Sauce & Ketchup',
     image:
-      'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=900&q=80',
+      juniourcheeseburger,
   },
   {
     id: 11,
@@ -108,7 +119,7 @@ const menuItems = [
     price: 7,
     description: 'Burger + chips + soft drink',
     image:
-      'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=900&q=80',
+      veggieloadedfries,
   },
   {
     id: 12,
@@ -117,7 +128,7 @@ const menuItems = [
     price: 9.9,
     description: 'Classic Oreo shake',
     image:
-      'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=900&q=80',
+      milkshake,
   },
   {
     id: 13,
@@ -126,7 +137,7 @@ const menuItems = [
     price: 9.9,
     description: 'Smooth Biscoff milkshake',
     image:
-      'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=900&q=80',
+      milkshake,
   },
   {
     id: 14,
@@ -135,7 +146,7 @@ const menuItems = [
     price: 8.9,
     description: 'Sweet caramel shake',
     image:
-      'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=900&q=80',
+      milkshake,
   },
   {
     id: 15,
@@ -144,7 +155,7 @@ const menuItems = [
     price: 8.9,
     description: 'Fresh strawberry shake',
     image:
-      'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=900&q=80',
+      milkshake,
   },
   {
     id: 16,
@@ -153,7 +164,7 @@ const menuItems = [
     price: 8.9,
     description: 'Rich chocolate shake',
     image:
-      'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=900&q=80',
+      milkshake,
   },
   {
     id: 17,
@@ -162,7 +173,7 @@ const menuItems = [
     price: 8.9,
     description: 'Classic vanilla shake',
     image:
-      'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=900&q=80',
+      milkshake,
   },
   {
     id: 18,
@@ -170,8 +181,7 @@ const menuItems = [
     category: 'Sides',
     price: 7,
     description: 'Crispy golden fries',
-    image:
-      'https://images.unsplash.com/photo-1576107232684-1279f390859f?auto=format&fit=crop&w=900&q=80',
+    image: veggieloadedfries,
   },
   {
     id: 19,
@@ -179,8 +189,7 @@ const menuItems = [
     category: 'Sides',
     price: 9,
     description: 'Extra large crispy fries',
-    image:
-      'https://images.unsplash.com/photo-1576107232684-1279f390859f?auto=format&fit=crop&w=900&q=80',
+    image:veggieloadedfries,
   },
   {
     id: 20,
@@ -190,7 +199,7 @@ const menuItems = [
     description:
       'Crunchy Fries, Liquid Cheese Sauce, Fried Chicken Pieces, Yard Signature Sauce',
     image:
-      'https://images.unsplash.com/photo-1576107232684-1279f390859f?auto=format&fit=crop&w=900&q=80',
+      veggieloadedfries,
   },
   {
     id: 21,
@@ -200,7 +209,7 @@ const menuItems = [
     description:
       'Crunchy Fries, Liquid Cheese Sauce, Red Onion, Jalapenos, Yard Signature Sauce & Spicy Peri Sauce',
     image:
-      'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=900&q=80',
+      veggieloadedfries,
   },
   {
     id: 22,
@@ -209,7 +218,7 @@ const menuItems = [
     price: 10,
     description: 'Crispy chicken bites and fries',
     image:
-      'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=900&q=80',
+      chipsnuggets,
   },
   {
     id: 23,
