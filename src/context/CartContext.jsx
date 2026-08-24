@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
 
 const CartContext = createContext(null);
 const STORAGE_KEY = 'burgerYardCart';
@@ -31,28 +32,47 @@ export function CartProvider({ children }) {
 
       return [...currentItems, { ...item, quantity: 1 }];
     });
+
+    toast.success(`${item.name} added to cart.`);
   };
 
   const updateQuantity = (itemId, change) => {
-    setCartItems((currentItems) =>
-      currentItems
+    const updatedItem = cartItems.find((entry) => entry.id === itemId);
+
+    setCartItems((currentItems) => {
+      const nextItems = currentItems
         .map((entry) =>
           entry.id === itemId
             ? { ...entry, quantity: Math.max(0, entry.quantity + change) }
             : entry,
         )
-        .filter((entry) => entry.quantity > 0),
-    );
+        .filter((entry) => entry.quantity > 0);
+
+      return nextItems;
+    });
+
+    if (updatedItem && change > 0) {
+      toast.info(`${updatedItem.name} quantity increased.`);
+    }
+    if (updatedItem && change < 0) {
+      toast.info(`${updatedItem.name} quantity decreased.`);
+    }
   };
 
   const removeFromCart = (itemId) => {
+    const removedItem = cartItems.find((entry) => entry.id === itemId);
     setCartItems((currentItems) =>
       currentItems.filter((entry) => entry.id !== itemId),
     );
+
+    if (removedItem) {
+      toast.warning(`${removedItem.name} removed from cart.`);
+    }
   };
 
   const clearCart = () => {
     setCartItems([]);
+    toast.info('Your cart has been cleared.');
   };
 
   const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);

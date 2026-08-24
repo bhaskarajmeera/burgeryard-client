@@ -1,3 +1,4 @@
+import { Button, Nav, Navbar as BootstrapNavbar, NavLink as BootstrapNavLink } from 'react-bootstrap';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import logo from '../assets/burger-yard-logo.png';
 import { useAuth } from '../context/AuthContext';
@@ -20,13 +21,17 @@ export function Navbar() {
           <img src={logo} alt="Burger Yard logo" className="brand-logo" />
         </Link>
 
-        <nav className="main-nav" aria-label="Main navigation">
-          <NavLink to="/" end>
+        <Nav className="main-nav" as="nav" aria-label="Main navigation">
+          <BootstrapNavLink as={NavLink} to="/" end>
             Menu
-          </NavLink>
-          <NavLink to="/cart">Cart</NavLink>
-          <NavLink to="/checkout">Checkout</NavLink>
-        </nav>
+          </BootstrapNavLink>
+          <BootstrapNavLink as={NavLink} to="/cart">
+            Cart
+          </BootstrapNavLink>
+          <BootstrapNavLink as={NavLink} to="/checkout">
+            Checkout
+          </BootstrapNavLink>
+        </Nav>
 
         <div className="nav-actions">
           <Link to="/cart" className="cart-pill" aria-label="View cart">
@@ -36,9 +41,9 @@ export function Navbar() {
           {user ? (
             <div className="user-menu">
               <span className="welcome-text">Hi, {user.name.split(' ')[0]}</span>
-              <button type="button" className="nav-button" onClick={handleLogout}>
+              <Button type="button" className="nav-button" onClick={handleLogout}>
                 Sign out
-              </button>
+              </Button>
             </div>
           ) : (
             <div className="auth-links">

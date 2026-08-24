@@ -12,6 +12,13 @@ import milkshake from '../assets/milk-shake.png';
 import juniourcheeseburger from '../assets/juniour-cheese-burger.png';
 import veggieloadedfries from '../assets/veggie-loaded-fries.png';
 import chipsnuggets from '../assets/nuggets-chips.png'
+import egg from "../assets/egg.png"
+/* import premiumwagyubeef from "../assets/premium-wagyu-beef.png";
+import mediumchips from "../assets/medium-chips.png";
+import onionrings from "../assets/onion-rings.png";
+import yardspiceperi from "../assets/yard-spice-peri.png";
+ */
+
 
 const menuItems = [
   {
@@ -181,7 +188,7 @@ const menuItems = [
     category: 'Sides',
     price: 7,
     description: 'Crispy golden fries',
-    image: veggieloadedfries,
+    image: chipsnuggets,
   },
   {
     id: 19,
@@ -189,7 +196,7 @@ const menuItems = [
     category: 'Sides',
     price: 9,
     description: 'Extra large crispy fries',
-    image:veggieloadedfries,
+    image:chipsnuggets,
   },
   {
     id: 20,
@@ -199,7 +206,7 @@ const menuItems = [
     description:
       'Crunchy Fries, Liquid Cheese Sauce, Fried Chicken Pieces, Yard Signature Sauce',
     image:
-      veggieloadedfries,
+      chipsnuggets,
   },
   {
     id: 21,
@@ -227,7 +234,7 @@ const menuItems = [
     price: 10,
     description: 'Golden battered onion rings',
     image:
-      'https://images.unsplash.com/photo-1532635241-17e820acc59f?auto=format&fit=crop&w=900&q=80',
+      chipsnuggets,
   },
   {
     id: 24,
@@ -235,8 +242,7 @@ const menuItems = [
     category: 'Yard Sauces',
     price: 2,
     description: 'Spicy peri sauce',
-    image:
-      'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=80',
+    image:chipsnuggets,
   },
   {
     id: 25,
@@ -245,7 +251,7 @@ const menuItems = [
     price: 2,
     description: 'Special burger house sauce',
     image:
-      'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=80',
+      chipsnuggets,
   },
   {
     id: 26,
@@ -254,7 +260,7 @@ const menuItems = [
     price: 2,
     description: 'Rich truffle burger sauce',
     image:
-      'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=80',
+      chipsnuggets,
   },
   {
     id: 27,
@@ -263,7 +269,7 @@ const menuItems = [
     price: 1,
     description: 'Fresh pineapple topping',
     image:
-      'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?auto=format&fit=crop&w=900&q=80',
+      chipsnuggets,
   },
   {
     id: 28,
@@ -272,7 +278,7 @@ const menuItems = [
     price: 1,
     description: 'Extra cheese slice',
     image:
-      'https://images.unsplash.com/photo-1552767059-ce182ead6e3d?auto=format&fit=crop&w=900&q=80',
+      chipsnuggets,
   },
   {
     id: 29,
@@ -281,7 +287,7 @@ const menuItems = [
     price: 2,
     description: 'Breakfast-style egg',
     image:
-      'https://images.unsplash.com/photo-1518569656558-1f25e69d93d3?auto=format&fit=crop&w=900&q=80',
+      egg,
   },
   {
     id: 30,
@@ -290,7 +296,7 @@ const menuItems = [
     price: 2,
     description: 'Crispy beef rasher',
     image:
-      'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80',
+      chipsnuggets,
   },
   {
     id: 31,
@@ -299,7 +305,7 @@ const menuItems = [
     price: 6,
     description: 'High-end wagyu beef patty',
     image:
-      'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=900&q=80',
+      chipsnuggets,
   },
   {
     id: 32,
@@ -308,7 +314,7 @@ const menuItems = [
     price: 5,
     description: 'Crispy chicken patty',
     image:
-      'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=900&q=80',
+      chipsnuggets,
   },
 ];
 
@@ -330,9 +336,7 @@ export function MenuPage() {
           <h1>Burger Yard</h1>
         </div>
         <div className="contact-details">
-          <p>@ The Mark Hotel</p>
-          <p>+61 451 449 096</p>
-          <p>46 Dickson St, Lambton NSW 2299</p>
+        
         </div>
       </div>
 

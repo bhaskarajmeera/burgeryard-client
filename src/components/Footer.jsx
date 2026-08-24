@@ -16,7 +16,11 @@ export function Footer() {
           <a href="#">Contact</a>
         </div>
 
-        <div className="footer-copy">© 2026 Burger Yard</div>
+        <div className="footer-copy">
+        <p>The Mark Hotel</p>
+        <p>46 Dickson St, Lambton NSW 2299</p>
+        <p> Mobile: +61 451 449 096</p>
+        © 2026 Burger Yard</div>
       </div>
     </footer>
   );

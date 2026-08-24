@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Button, Form, Stack } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -10,7 +11,7 @@ export function AuthPage({ mode }) {
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { login, signup } = useAuth();
+  const { login, signup, socialLogin } = useAuth();
 
   const isSignUp = mode === 'signup';
 
@@ -19,27 +20,31 @@ export function AuthPage({ mode }) {
     setFormData((current) => ({ ...current, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
 
-    if (isSignUp) {
-      const result = signup(formData);
-      if (!result.ok) {
-        setError(result.message);
-        return;
-      }
-      navigate('/');
-      return;
-    }
+    const action = isSignUp ? signup : login;
+    const result = await action(formData);
 
-    const result = login(formData);
     if (!result.ok) {
       setError(result.message);
       return;
     }
 
-    navigate('/checkout');
+    navigate(isSignUp ? '/' : '/checkout');
+  };
+
+  const handleSocialAuth = async (provider) => {
+    setError('');
+    const result = await socialLogin(provider);
+
+    if (!result.ok) {
+      setError(result.message);
+      return;
+    }
+
+    navigate('/');
   };
 
   return (
@@ -55,11 +60,24 @@ export function AuthPage({ mode }) {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
+        <Stack gap={2} className="social-auth-group">
+          <Button variant="light" className="social-auth-button google" onClick={() => handleSocialAuth('google')}>
+            Continue with Google
+          </Button>
+          <Button variant="dark" className="social-auth-button apple" onClick={() => handleSocialAuth('apple')}>
+            Continue with Apple
+          </Button>
+        </Stack>
+
+        <div className="auth-divider">
+          <span>or</span>
+        </div>
+
+        <Form onSubmit={handleSubmit} className="auth-form">
           {isSignUp && (
-            <label>
-              Full name
-              <input
+            <Form.Group>
+              <Form.Label>Full name</Form.Label>
+              <Form.Control
                 type="text"
                 name="name"
                 value={formData.name}
@@ -67,12 +85,12 @@ export function AuthPage({ mode }) {
                 placeholder="John Smith"
                 required
               />
-            </label>
+            </Form.Group>
           )}
 
-          <label>
-            Email address
-            <input
+          <Form.Group>
+            <Form.Label>Email address</Form.Label>
+            <Form.Control
               type="email"
               name="email"
               value={formData.email}
@@ -80,11 +98,11 @@ export function AuthPage({ mode }) {
               placeholder="you@example.com"
               required
             />
-          </label>
+          </Form.Group>
 
-          <label>
-            Password
-            <input
+          <Form.Group>
+            <Form.Label>Password</Form.Label>
+            <Form.Control
               type="password"
               name="password"
               value={formData.password}
@@ -92,14 +110,14 @@ export function AuthPage({ mode }) {
               placeholder="••••••••"
               required
             />
-          </label>
+          </Form.Group>
 
           {error && <p className="auth-error">{error}</p>}
 
-          <button type="submit" className="nav-button primary full-width">
+          <Button type="submit" className="nav-button primary full-width">
             {isSignUp ? 'Create Account' : 'Sign In'}
-          </button>
-        </form>
+          </Button>
+        </Form>
       </div>
     </section>
   );

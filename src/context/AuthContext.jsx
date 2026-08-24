@@ -1,8 +1,10 @@
 import { createContext, useContext, useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
+import { authApi } from '../api/axios';
 
 const AuthContext = createContext(null);
 const STORAGE_KEY = 'burgerYardUser';
-const USERS_KEY = 'burgerYardUsers';
+const TOKEN_KEY = 'burgerYardToken';
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
@@ -14,64 +16,86 @@ export function AuthProvider({ children }) {
     }
   });
 
-  const persistUser = (nextUser) => {
+  const persistUser = (nextUser, token = null) => {
     setUser(nextUser);
 
     if (nextUser) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser));
+      if (token) {
+        localStorage.setItem(TOKEN_KEY, token);
+      }
       return;
     }
 
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(TOKEN_KEY);
   };
 
-  const signup = ({ name, email, password }) => {
-    const savedUsers = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
-    const alreadyExists = savedUsers.some(
-      (entry) => entry.email.toLowerCase() === email.toLowerCase(),
-    );
+  const signup = async ({ name, email, password }) => {
+    try {
+      const { data } = await authApi.signup({ name, email, password });
 
-    if (alreadyExists) {
-      return { ok: false, message: 'An account with this email already exists.' };
+      const nextUser = {
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+      };
+
+      persistUser(nextUser, data.token);
+      toast.success('Account created successfully!');
+
+      return { ok: true, user: nextUser };
+    } catch (error) {
+      const message = error.response?.data?.message || 'Signup failed. Please try again.';
+      toast.error(message);
+      return {
+        ok: false,
+        message,
+      };
     }
+  };
 
-    const newUser = {
-      id: Date.now(),
-      name,
-      email,
-      password,
+  const login = async ({ email, password }) => {
+    try {
+      const { data } = await authApi.login({ email, password });
+
+      const nextUser = {
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+      };
+
+      persistUser(nextUser, data.token);
+      toast.success('Logged in successfully!');
+
+      return { ok: true, user: nextUser };
+    } catch (error) {
+      const message = error.response?.data?.message || 'Invalid email or password.';
+      toast.error(message);
+      return {
+        ok: false,
+        message,
+      };
+    }
+  };
+
+  const socialLogin = async (provider) => {
+    const providerName = provider === 'google' ? 'Google' : 'Apple';
+    const nextUser = {
+      id: `${provider}-user`,
+      name: `${providerName} User`,
+      email: `${provider}@demo.local`,
     };
 
-    const updatedUsers = [...savedUsers, newUser];
-    localStorage.setItem(USERS_KEY, JSON.stringify(updatedUsers));
-    persistUser({ id: newUser.id, name: newUser.name, email: newUser.email });
+    persistUser(nextUser, `${provider}-demo-token`);
+    toast.success(`${providerName} sign-in successful!`);
 
-    return { ok: true };
-  };
-
-  const login = ({ email, password }) => {
-    const savedUsers = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
-    const matchedUser = savedUsers.find(
-      (entry) =>
-        entry.email.toLowerCase() === email.toLowerCase() &&
-        entry.password === password,
-    );
-
-    if (!matchedUser) {
-      return { ok: false, message: 'Invalid email or password.' };
-    }
-
-    persistUser({
-      id: matchedUser.id,
-      name: matchedUser.name,
-      email: matchedUser.email,
-    });
-
-    return { ok: true };
+    return { ok: true, user: nextUser };
   };
 
   const logout = () => {
     persistUser(null);
+    toast.info('Signed out successfully.');
   };
 
   const value = useMemo(
@@ -79,6 +103,7 @@ export function AuthProvider({ children }) {
       user,
       login,
       signup,
+      socialLogin,
       logout,
     }),
     [user],
