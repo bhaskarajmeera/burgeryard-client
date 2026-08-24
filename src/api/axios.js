@@ -31,5 +31,6 @@ export const authApi = {
 };
 
 export const checkoutApi = {
+  createPaymentIntent: (payload) => api.post('/payments/create-intent', payload),
   placeOrder: (payload) => api.post('/checkout', payload),
 };

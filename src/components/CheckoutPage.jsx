@@ -1,13 +1,28 @@
 import { useState } from 'react';
 import { Button, Card, Col, Container, Form, Row, Stack } from 'react-bootstrap';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { CardElement, Elements, useElements, useStripe } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import { checkoutApi } from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 
+const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+const stripePromise = stripePublishableKey ? loadStripe(stripePublishableKey) : null;
+
 export function CheckoutPage() {
+  return (
+    <Elements stripe={stripePromise}>
+      <CheckoutForm />
+    </Elements>
+  );
+}
+
+function CheckoutForm() {
   const { user, updateUser } = useAuth();
   const { cartItems, subtotal, clearCart } = useCart();
+  const stripe = useStripe();
+  const elements = useElements();
   const savedAddress = user?.deliveryAddress || {};
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -17,7 +32,7 @@ export function CheckoutPage() {
     state: savedAddress.state || 'TX',
     postcode: savedAddress.postcode || '78701',
     phone: user?.phone || '(512) 555-0145',
-    paymentMethod: 'card',
+    paymentMethod: 'stripe',
   });
   const navigate = useNavigate();
 
@@ -42,6 +57,37 @@ export function CheckoutPage() {
     setIsSubmitting(true);
 
     try {
+      const total = subtotal + 4.99;
+      let paymentIntentId;
+
+      if (checkoutDetails.paymentMethod === 'stripe') {
+        if (!stripe || !elements) {
+          throw new Error('Stripe is not configured. Add VITE_STRIPE_PUBLISHABLE_KEY to the client environment.');
+        }
+
+        const cardElement = elements.getElement(CardElement);
+        if (!cardElement) {
+          throw new Error('Enter your card details to continue.');
+        }
+
+        const { data: intentData } = await checkoutApi.createPaymentIntent({ amount: total });
+        const paymentResult = await stripe.confirmCardPayment(intentData.clientSecret, {
+          payment_method: {
+            card: cardElement,
+            billing_details: {
+              name: user.name,
+              email: user.email,
+            },
+          },
+        });
+
+        if (paymentResult.error) {
+          throw new Error(paymentResult.error.message);
+        }
+
+        paymentIntentId = paymentResult.paymentIntent.id;
+      }
+
       const { data } = await checkoutApi.placeOrder({
         items: cartItems.map(({ id, name, price, quantity, image }) => ({
           id,
@@ -50,7 +96,7 @@ export function CheckoutPage() {
           quantity,
           image,
         })),
-        total: subtotal + 4.99,
+        total,
         deliveryAddress: {
           street: checkoutDetails.street,
           city: checkoutDetails.city,
@@ -59,6 +105,7 @@ export function CheckoutPage() {
           phone: checkoutDetails.phone,
         },
         paymentMethod: checkoutDetails.paymentMethod,
+        paymentIntentId,
       });
 
       updateUser(data.user);
@@ -160,10 +207,20 @@ export function CheckoutPage() {
               <Form.Group className="mt-4">
                 <Form.Label>Payment method</Form.Label>
                 <Form.Select name="paymentMethod" value={checkoutDetails.paymentMethod} onChange={updateCheckoutDetails} form="checkout-form">
-                  <option value="card">Card</option>
+                  <option value="stripe">Credit or debit card (Stripe)</option>
                   <option value="cash">Cash on delivery</option>
                 </Form.Select>
               </Form.Group>
+
+              {checkoutDetails.paymentMethod === 'stripe' && (
+                <div className="border rounded-3 p-3 mt-3">
+                  <Form.Label>Card details</Form.Label>
+                  <CardElement options={{ hidePostalCode: true }} />
+                  {!stripePublishableKey && (
+                    <p className="text-danger small mb-0 mt-2">Stripe is not configured yet.</p>
+                  )}
+                </div>
+              )}
 
               <Button type="submit" form="checkout-form" variant="primary" className="w-100 rounded-pill py-2 mt-4" disabled={isSubmitting}>
                 {isSubmitting ? 'Placing order...' : 'Place order'}
