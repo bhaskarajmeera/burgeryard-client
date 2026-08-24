@@ -26,6 +26,8 @@ export const authApi = {
   signup: (payload) => api.post('/signup', payload),
   login: (payload) => api.post('/login', payload),
   getProfile: () => api.get('/me'),
+  updateProfile: (payload) => api.put('/profile', payload),
+  getOrders: () => api.get('/orders'),
 };
 
 export const checkoutApi = {

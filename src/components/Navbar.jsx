@@ -1,4 +1,4 @@
-import { Button, Nav, Navbar as BootstrapNavbar, NavLink as BootstrapNavLink } from 'react-bootstrap';
+import { Button, Nav, NavLink as BootstrapNavLink } from 'react-bootstrap';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import logo from '../assets/burger-yard-logo.png';
 import { useAuth } from '../context/AuthContext';
@@ -40,7 +40,13 @@ export function Navbar() {
 
           {user ? (
             <div className="user-menu">
-              <span className="welcome-text">Hi, {user.name.split(' ')[0]}</span>
+              <Link
+                to="/profile"
+                className="welcome-text"
+                aria-label={`Open profile for ${user.name}`}
+              >
+                Hi, {user.name.split(' ')[0]}
+              </Link>
               <Button type="button" className="nav-button" onClick={handleLogout}>
                 Sign out
               </Button>

@@ -9,6 +9,7 @@ import { CheckoutPage } from './components/CheckoutPage';
 import { Footer } from './components/Footer';
 import { MenuPage } from './components/MenuPage';
 import { Navbar } from './components/Navbar';
+import { ProfilePage } from './components/ProfilePage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
@@ -31,6 +32,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <CheckoutPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <ProfilePage />
                     </ProtectedRoute>
                   }
                 />

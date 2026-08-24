@@ -6,9 +6,19 @@ import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 
 export function CheckoutPage() {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const { cartItems, subtotal, clearCart } = useCart();
+  const savedAddress = user?.deliveryAddress || {};
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [checkoutDetails, setCheckoutDetails] = useState({
+    street: savedAddress.street || '245 Burger Lane',
+    city: savedAddress.city || 'Austin',
+    state: savedAddress.state || 'TX',
+    postcode: savedAddress.postcode || '78701',
+    phone: user?.phone || '(512) 555-0145',
+    paymentMethod: 'card',
+  });
   const navigate = useNavigate();
 
   if (!user) {
@@ -19,9 +29,20 @@ export function CheckoutPage() {
     return <Navigate to="/" replace />;
   }
 
-  const placeOrder = async () => {
+  const updateCheckoutDetails = (event) => {
+    const { name, value } = event.target;
+    setCheckoutDetails((currentDetails) => ({
+      ...currentDetails,
+      [name]: value,
+    }));
+  };
+
+  const placeOrder = async (event) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+
     try {
-      await checkoutApi.placeOrder({
+      const { data } = await checkoutApi.placeOrder({
         items: cartItems.map(({ id, name, price, quantity, image }) => ({
           id,
           name,
@@ -31,13 +52,16 @@ export function CheckoutPage() {
         })),
         total: subtotal + 4.99,
         deliveryAddress: {
-          street: '245 Burger Lane',
-          city: 'Austin',
-          state: 'TX',
-          postcode: '78701',
+          street: checkoutDetails.street,
+          city: checkoutDetails.city,
+          state: checkoutDetails.state,
+          postcode: checkoutDetails.postcode,
+          phone: checkoutDetails.phone,
         },
+        paymentMethod: checkoutDetails.paymentMethod,
       });
 
+      updateUser(data.user);
       setOrderPlaced(true);
       clearCart();
 
@@ -46,6 +70,8 @@ export function CheckoutPage() {
       }, 1800);
     } catch (error) {
       alert(error.response?.data?.message || 'Unable to connect to server. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -76,20 +102,30 @@ export function CheckoutPage() {
                 <p className="text-muted mb-0">{user.email}</p>
               </div>
 
-              <Form className="row g-3">
+              <Form id="checkout-form" className="row g-3" onSubmit={placeOrder}>
                 <Form.Group className="col-md-12">
                   <Form.Label>Street address</Form.Label>
-                  <Form.Control type="text" defaultValue="245 Burger Lane" />
+                  <Form.Control name="street" type="text" value={checkoutDetails.street} onChange={updateCheckoutDetails} required />
                 </Form.Group>
 
                 <Form.Group className="col-md-6">
                   <Form.Label>City</Form.Label>
-                  <Form.Control type="text" defaultValue="Austin" />
+                  <Form.Control name="city" type="text" value={checkoutDetails.city} onChange={updateCheckoutDetails} required />
                 </Form.Group>
 
                 <Form.Group className="col-md-6">
                   <Form.Label>Phone number</Form.Label>
-                  <Form.Control type="text" defaultValue="(512) 555-0145" />
+                  <Form.Control name="phone" type="tel" value={checkoutDetails.phone} onChange={updateCheckoutDetails} required />
+                </Form.Group>
+
+                <Form.Group className="col-md-6">
+                  <Form.Label>State</Form.Label>
+                  <Form.Control name="state" type="text" value={checkoutDetails.state} onChange={updateCheckoutDetails} required />
+                </Form.Group>
+
+                <Form.Group className="col-md-6">
+                  <Form.Label>Postcode</Form.Label>
+                  <Form.Control name="postcode" type="text" value={checkoutDetails.postcode} onChange={updateCheckoutDetails} required />
                 </Form.Group>
               </Form>
             </Card.Body>
@@ -121,8 +157,16 @@ export function CheckoutPage() {
                 </div>
               </Stack>
 
-              <Button type="button" variant="primary" className="w-100 rounded-pill py-2 mt-4" onClick={placeOrder}>
-                Place order
+              <Form.Group className="mt-4">
+                <Form.Label>Payment method</Form.Label>
+                <Form.Select name="paymentMethod" value={checkoutDetails.paymentMethod} onChange={updateCheckoutDetails} form="checkout-form">
+                  <option value="card">Card</option>
+                  <option value="cash">Cash on delivery</option>
+                </Form.Select>
+              </Form.Group>
+
+              <Button type="submit" form="checkout-form" variant="primary" className="w-100 rounded-pill py-2 mt-4" disabled={isSubmitting}>
+                {isSubmitting ? 'Placing order...' : 'Place order'}
               </Button>
             </Card.Body>
           </Card>

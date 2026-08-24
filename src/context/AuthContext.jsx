@@ -6,6 +6,15 @@ const AuthContext = createContext(null);
 const STORAGE_KEY = 'burgerYardUser';
 const TOKEN_KEY = 'burgerYardToken';
 
+const toUser = (userData) => ({
+  id: userData.id,
+  name: userData.name,
+  email: userData.email,
+  phone: userData.phone || '',
+  deliveryAddress: userData.deliveryAddress || {},
+  paymentCard: userData.paymentCard || {},
+});
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
@@ -35,11 +44,7 @@ export function AuthProvider({ children }) {
     try {
       const { data } = await authApi.signup({ name, email, password });
 
-      const nextUser = {
-        id: data.user.id,
-        name: data.user.name,
-        email: data.user.email,
-      };
+      const nextUser = toUser(data.user);
 
       persistUser(nextUser, data.token);
       toast.success('Account created successfully!');
@@ -59,11 +64,7 @@ export function AuthProvider({ children }) {
     try {
       const { data } = await authApi.login({ email, password });
 
-      const nextUser = {
-        id: data.user.id,
-        name: data.user.name,
-        email: data.user.email,
-      };
+      const nextUser = toUser(data.user);
 
       persistUser(nextUser, data.token);
       toast.success('Logged in successfully!');
@@ -93,6 +94,10 @@ export function AuthProvider({ children }) {
     return { ok: true, user: nextUser };
   };
 
+  const updateUser = (nextUser) => {
+    persistUser(toUser(nextUser));
+  };
+
   const logout = () => {
     persistUser(null);
     toast.info('Signed out successfully.');
@@ -105,6 +110,7 @@ export function AuthProvider({ children }) {
       signup,
       socialLogin,
       logout,
+      updateUser,
     }),
     [user],
   );
