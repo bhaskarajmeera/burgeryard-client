@@ -891,6 +891,86 @@ img {
   padding: 22px;
 }
 
+.payment-methods {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.payment-method {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 62px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.payment-method.selected {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.12);
+}
+
+.payment-method input {
+  accent-color: var(--primary);
+}
+
+.payment-logo {
+  display: inline-grid;
+  flex: 0 0 42px;
+  place-items: center;
+  height: 28px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.payment-logo-visa {
+  color: #1434cb;
+  background: #f1f5ff;
+  font-style: italic;
+}
+
+.payment-logo-mastercard {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  background: #fff7ed;
+}
+
+.payment-logo-mastercard span {
+  display: block;
+  width: 20px;
+  overflow: hidden;
+  color: #eb001b;
+  font-size: 2rem;
+  line-height: 0.6;
+}
+
+.payment-logo-mastercard span + span {
+  margin-left: -8px;
+  color: #f79e1b;
+}
+
+.payment-logo-paypal {
+  color: #003087;
+  background: #eef5ff;
+  font-size: 1.35rem;
+  font-style: italic;
+}
+
+.payment-logo-cash {
+  color: #16794c;
+  background: #effaf4;
+  font-size: 1.1rem;
+}
+
 .checkout-form {
   margin-top: 18px;
 }

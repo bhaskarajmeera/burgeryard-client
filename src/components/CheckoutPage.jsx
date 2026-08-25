@@ -32,7 +32,7 @@ function CheckoutForm() {
     state: savedAddress.state || 'TX',
     postcode: savedAddress.postcode || '78701',
     phone: user?.phone || '(512) 555-0145',
-    paymentMethod: 'stripe',
+    paymentMethod: 'visa',
   });
   const navigate = useNavigate();
 
@@ -60,7 +60,7 @@ function CheckoutForm() {
       const total = subtotal + 4.99;
       let paymentIntentId;
 
-      if (checkoutDetails.paymentMethod === 'stripe') {
+      if (['visa', 'mastercard'].includes(checkoutDetails.paymentMethod)) {
         if (!stripe || !elements) {
           throw new Error('Stripe is not configured. Add VITE_STRIPE_PUBLISHABLE_KEY to the client environment.');
         }
@@ -206,20 +206,72 @@ function CheckoutForm() {
 
               <Form.Group className="mt-4">
                 <Form.Label>Payment method</Form.Label>
-                <Form.Select name="paymentMethod" value={checkoutDetails.paymentMethod} onChange={updateCheckoutDetails} form="checkout-form">
-                  <option value="stripe">Credit or debit card (Stripe)</option>
-                  <option value="cash">Cash on delivery</option>
-                </Form.Select>
+                <div className="payment-methods" role="radiogroup" aria-label="Payment method">
+                  <label className={`payment-method ${checkoutDetails.paymentMethod === 'visa' ? 'selected' : ''}`}>
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="visa"
+                      checked={checkoutDetails.paymentMethod === 'visa'}
+                      onChange={updateCheckoutDetails}
+                      form="checkout-form"
+                    />
+                    <span className="payment-logo payment-logo-visa" aria-hidden="true">VISA</span>
+                    <span>Visa</span>
+                  </label>
+                  <label className={`payment-method ${checkoutDetails.paymentMethod === 'mastercard' ? 'selected' : ''}`}>
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="mastercard"
+                      checked={checkoutDetails.paymentMethod === 'mastercard'}
+                      onChange={updateCheckoutDetails}
+                      form="checkout-form"
+                    />
+                    <span className="payment-logo payment-logo-mastercard" aria-hidden="true"><span>●</span><span>●</span></span>
+                    <span>Mastercard</span>
+                  </label>
+                  <label className={`payment-method ${checkoutDetails.paymentMethod === 'paypal' ? 'selected' : ''}`}>
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="paypal"
+                      checked={checkoutDetails.paymentMethod === 'paypal'}
+                      onChange={updateCheckoutDetails}
+                      form="checkout-form"
+                    />
+                    <span className="payment-logo payment-logo-paypal" aria-hidden="true">P</span>
+                    <span>PayPal</span>
+                  </label>
+                  <label className={`payment-method ${checkoutDetails.paymentMethod === 'cash' ? 'selected' : ''}`}>
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="cash"
+                      checked={checkoutDetails.paymentMethod === 'cash'}
+                      onChange={updateCheckoutDetails}
+                      form="checkout-form"
+                    />
+                    <span className="payment-logo payment-logo-cash" aria-hidden="true">$</span>
+                    <span>Cash on delivery</span>
+                  </label>
+                </div>
               </Form.Group>
 
-              {checkoutDetails.paymentMethod === 'stripe' && (
+              {['visa', 'mastercard'].includes(checkoutDetails.paymentMethod) && (
                 <div className="border rounded-3 p-3 mt-3">
-                  <Form.Label>Card details</Form.Label>
+                  <Form.Label>{checkoutDetails.paymentMethod === 'visa' ? 'Visa' : 'Mastercard'} details</Form.Label>
                   <CardElement options={{ hidePostalCode: true }} />
                   {!stripePublishableKey && (
                     <p className="text-danger small mb-0 mt-2">Stripe is not configured yet.</p>
                   )}
                 </div>
+              )}
+
+              {checkoutDetails.paymentMethod === 'paypal' && (
+                <p className="text-muted small mt-3 mb-0">
+                  PayPal orders are placed as pending and confirmed by our team before dispatch.
+                </p>
               )}
 
               <Button type="submit" form="checkout-form" variant="primary" className="w-100 rounded-pill py-2 mt-4" disabled={isSubmitting}>

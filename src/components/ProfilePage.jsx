@@ -110,13 +110,13 @@ export function ProfilePage() {
           <Card className="border-0 shadow-sm">
             <Card.Body className="p-4 p-md-5">
               <div className="d-flex align-items-center gap-3 mb-4">
-                <div
+                {/* <div
                   className="rounded-circle d-grid place-items-center bg-warning text-dark fw-bold fs-4"
-                  style={{ width: 72, height: 72 }}
+                  style={{ width: 80, height: 80 }}
                   aria-hidden="true"
                 >
                   {initials}
-                </div>
+                </div> */}
                 <div>
                   <p className="text-uppercase text-warning fw-bold mb-1" style={{ letterSpacing: '0.08em' }}>
                     Your account
