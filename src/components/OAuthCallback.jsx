@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Alert, Container } from 'react-bootstrap';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -7,10 +7,17 @@ export function OAuthCallback() {
   const [searchParams] = useSearchParams();
   const { completeSocialLogin } = useAuth();
   const navigate = useNavigate();
+  const hasCompletedLogin = useRef(false);
   const token = searchParams.get('token');
   const user = searchParams.get('user');
 
   useEffect(() => {
+    if (hasCompletedLogin.current) {
+      return;
+    }
+
+    hasCompletedLogin.current = true;
+
     if (!token || !user) {
       navigate('/signin?oauth=failed', { replace: true });
       return;
