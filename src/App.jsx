@@ -30,9 +30,7 @@ function App() {
                 <Route path="/signin" element={<AuthPage mode="signin" />} />
                 <Route path="/signup" element={<AuthPage mode="signup" />} />
                 <Route path="/oauth-callback" element={<OAuthCallback />} />
-                <Route
-                  path="/checkout"
-                  element={
+                <Route path="/checkout" element={
                     <ProtectedRoute>
                       <CheckoutPage />
                     </ProtectedRoute>

@@ -64,9 +64,6 @@ export function AuthPage({ mode }) {
           <Button variant="light" className="social-auth-button google" onClick={() => handleSocialAuth('google')}>
             Continue with Google
           </Button>
-          <Button variant="dark" className="social-auth-button apple" onClick={() => handleSocialAuth('apple')}>
-            Continue with Apple
-          </Button>
         </Stack>
 
         <div className="auth-divider">

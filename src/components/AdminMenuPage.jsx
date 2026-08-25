@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom';
 import { menuApi } from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 
-const emptyItem = { name: '', category: '', price: '', description: '', image: '', available: true };
+const emptyItem = { name: '', category: '', price: '', description: '', available: true };
 
 export function AdminMenuPage() {
   const { user } = useAuth();
@@ -30,7 +30,8 @@ export function AdminMenuPage() {
     event.preventDefault();
     setError('');
     try {
-      const request = { ...form, price: Number(form.price) };
+      const { name, category, price, description, available } = form;
+      const request = { name, category, price: Number(price), description, available };
       const { data } = editingId ? await menuApi.update(editingId, request) : await menuApi.create(request);
       setItems((current) => editingId ? current.map((item) => item._id === editingId ? data.menuItem : item) : [...current, data.menuItem]);
       setForm(emptyItem);
@@ -42,7 +43,7 @@ export function AdminMenuPage() {
 
   const editItem = (item) => {
     setEditingId(item._id);
-    setForm({ name: item.name, category: item.category, price: item.price, description: item.description, image: item.image || '', available: item.available });
+    setForm({ name: item.name, category: item.category, price: item.price, description: item.description, available: item.available });
   };
 
   const removeItem = async (id) => {
@@ -63,10 +64,10 @@ export function AdminMenuPage() {
           <Card className="border-0 shadow-sm"><Card.Body>
             <h2 className="h4">{editingId ? 'Edit item' : 'Add item'}</h2>
             <Form onSubmit={saveItem}>
-              {['name', 'category', 'price', 'image'].map((field) => (
+              {['name', 'category', 'price'].map((field) => (
                 <Form.Group className="mb-3" key={field}>
                   <Form.Label>{field[0].toUpperCase() + field.slice(1)}</Form.Label>
-                  <Form.Control name={field} type={field === 'price' ? 'number' : 'text'} step={field === 'price' ? '0.01' : undefined} value={form[field]} onChange={updateForm} required={field !== 'image'} />
+                  <Form.Control name={field} type={field === 'price' ? 'number' : 'text'} step={field === 'price' ? '0.01' : undefined} value={form[field]} onChange={updateForm} required />
                 </Form.Group>
               ))}
               <Form.Group className="mb-3"><Form.Label>Description</Form.Label><Form.Control as="textarea" name="description" value={form.description} onChange={updateForm} required /></Form.Group>
