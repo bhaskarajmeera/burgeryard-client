@@ -20,6 +20,7 @@ export function AuthPage({ mode }) {
     setFormData((current) => ({ ...current, [name]: value }));
   };
 
+  // Submit either the sign-in or account-creation form for the current mode.
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
@@ -35,6 +36,7 @@ export function AuthPage({ mode }) {
     navigate(isSignUp ? '/' : '/checkout');
   };
 
+  // Redirect to the provider; the callback completes authentication later.
   const handleSocialAuth = async (provider) => {
     setError('');
     const result = await socialLogin(provider);

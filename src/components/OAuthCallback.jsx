@@ -12,6 +12,7 @@ export function OAuthCallback() {
   const user = searchParams.get('user');
 
   useEffect(() => {
+    // StrictMode can replay effects, so complete this one-time login only once.
     if (hasCompletedLogin.current) {
       return;
     }

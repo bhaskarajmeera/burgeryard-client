@@ -41,6 +41,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem(TOKEN_KEY);
   };
 
+  // Register the customer, then persist the returned session locally.
   const signup = async ({ name, email, password }) => {
     try {
       const { data } = await authApi.signup({ name, email, password });
@@ -61,6 +62,7 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Authenticate the customer, then persist the returned session locally.
   const login = async ({ email, password }) => {
     try {
       const { data } = await authApi.login({ email, password });
@@ -81,12 +83,14 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Start the provider redirect; OAuth completion happens on the callback route.
   const socialLogin = async (provider) => {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
     window.location.assign(`${apiBaseUrl}/api/v1/auth/${provider}`);
     return { ok: true };
   };
 
+  // Store the provider session returned by the OAuth callback.
   const completeSocialLogin = (token, userData) => {
     const nextUser = toUser(userData);
     persistUser(nextUser, token);
@@ -97,6 +101,7 @@ export function AuthProvider({ children }) {
     persistUser(toUser(nextUser));
   };
 
+  // Clear the stored session and notify the user after signing out.
   const logout = () => {
     persistUser(null);
     toast.info('Signed out successfully.');
