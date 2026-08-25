@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api/v1`;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -33,4 +33,11 @@ export const authApi = {
 export const checkoutApi = {
   createPaymentIntent: (payload) => api.post('/payments/create-intent', payload),
   placeOrder: (payload) => api.post('/checkout', payload),
+};
+
+export const menuApi = {
+  getAll: () => api.get('/menu'),
+  create: (payload) => api.post('/admin/menu', payload),
+  update: (id, payload) => api.put(`/admin/menu/${id}`, payload),
+  remove: (id) => api.delete(`/admin/menu/${id}`),
 };

@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCart } from '../context/CartContext';
+import { menuApi } from '../api/axios';
 import backyardclassic from '../assets/back-yard-classic.png';
 import doublestack from '../assets/double-stack.png';
 import greenyardveggie from '../assets/green-yard-veggie.png';
@@ -320,13 +321,21 @@ const menuItems = [
 
 export function MenuPage() {
   const [activeCategory, setActiveCategory] = useState('All');
+  const [databaseMenu, setDatabaseMenu] = useState([]);
   const { addToCart } = useCart();
 
-  const categories = ['All', ...new Set(menuItems.map((item) => item.category))];
+  useEffect(() => {
+    menuApi.getAll().then(({ data }) => {
+      if (data.menuItems?.length > 0) setDatabaseMenu(data.menuItems);
+    }).catch(() => {});
+  }, []);
+
+  const visibleMenu = databaseMenu.length > 0 ? databaseMenu : menuItems;
+  const categories = ['All', ...new Set(visibleMenu.map((item) => item.category))];
   const visibleItems =
     activeCategory === 'All'
-      ? menuItems
-      : menuItems.filter((item) => item.category === activeCategory);
+      ? visibleMenu
+      : visibleMenu.filter((item) => item.category === activeCategory);
 
   return (
     <section className="menu-page">

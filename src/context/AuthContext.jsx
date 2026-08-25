@@ -10,6 +10,7 @@ const toUser = (userData) => ({
   id: userData.id,
   name: userData.name,
   email: userData.email,
+  role: userData.role || 'user',
   phone: userData.phone || '',
   deliveryAddress: userData.deliveryAddress || {},
   paymentCard: userData.paymentCard || {},
@@ -81,17 +82,15 @@ export function AuthProvider({ children }) {
   };
 
   const socialLogin = async (provider) => {
-    const providerName = provider === 'google' ? 'Google' : 'Apple';
-    const nextUser = {
-      id: `${provider}-user`,
-      name: `${providerName} User`,
-      email: `${provider}@demo.local`,
-    };
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+    window.location.assign(`${apiBaseUrl}/api/v1/auth/${provider}`);
+    return { ok: true };
+  };
 
-    persistUser(nextUser, `${provider}-demo-token`);
-    toast.success(`${providerName} sign-in successful!`);
-
-    return { ok: true, user: nextUser };
+  const completeSocialLogin = (token, userData) => {
+    const nextUser = toUser(userData);
+    persistUser(nextUser, token);
+    toast.success('Signed in successfully!');
   };
 
   const updateUser = (nextUser) => {
@@ -109,6 +108,7 @@ export function AuthProvider({ children }) {
       login,
       signup,
       socialLogin,
+      completeSocialLogin,
       logout,
       updateUser,
     }),

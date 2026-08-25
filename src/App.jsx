@@ -8,7 +8,9 @@ import { CartPage } from './components/CartPage';
 import { CheckoutPage } from './components/CheckoutPage';
 import { Footer } from './components/Footer';
 import { MenuPage } from './components/MenuPage';
+import { AdminMenuPage } from './components/AdminMenuPage';
 import { Navbar } from './components/Navbar';
+import { OAuthCallback } from './components/OAuthCallback';
 import { ProfilePage } from './components/ProfilePage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
@@ -27,6 +29,7 @@ function App() {
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/signin" element={<AuthPage mode="signin" />} />
                 <Route path="/signup" element={<AuthPage mode="signup" />} />
+                <Route path="/oauth-callback" element={<OAuthCallback />} />
                 <Route
                   path="/checkout"
                   element={
@@ -40,6 +43,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <ProfilePage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/menu"
+                  element={
+                    <ProtectedRoute>
+                      <AdminMenuPage />
                     </ProtectedRoute>
                   }
                 />
